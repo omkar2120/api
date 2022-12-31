@@ -3,4 +3,4 @@ const welcomeController = {
     return res.status(200).json({ message: "sucessfully", status: 1 });
   },
 };
-module.exports = welcomeController;
+export default welcomeController;

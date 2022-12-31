@@ -1,10 +1,12 @@
-require("./config/db.config").connectDB();
-const express = require("express");
-const welcomeRouter = require("./routes/welcome.routes");
-const studentRouter = require("./routes/public/student.routes");
+import connectDB from "./config/db.config.js";
+import express from "express";
+import welcomeRouter from "./routes/welcome.routes.js";
+import studentRouter from "./routes/public/student.routes.js";
+
+connectDB();
+
 const app = express();
 const port = 5000;
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use("/", welcomeRouter);
