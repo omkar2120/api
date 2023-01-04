@@ -1,0 +1,129 @@
+//let ids = mongoose.Types.ObjectId(id);
+//{ $match: { _id: ids } }
+//{ $match: { $expr: { $eq: ["$_id", { $toObjectId: id }] } } },
+
+userModel
+.aggregate([
+//{ $match: { $expr: { $eq: ["$_id", { $toObjectId: id }] } } },
+{ $match: { block: false } },
+{
+    $sort: { createdAt: -1 },
+},
+{
+    $project: {
+    _id: 1,
+    name: 1,
+    username: 1,
+    email: 1,
+    role: 1,
+    block: 1,
+    verified: 1,
+    },
+},
+])
+.exec((err, result) => {
+if (result) {
+    if (result instanceof Array && result.length < 2) {
+    let obj = Object(result[0]);
+    return res
+        .status(200)
+        .json(response.success("User fetch successfully", obj));
+    } else {
+    return res
+        .status(200)
+        .json(response.success("User fetch successfully", result));
+    }
+} else {
+    return res.status(200).json(response.error(err.message));
+}
+});
+
+-------------------------------------------------------------------------------
+userModel
+.aggregate([
+{ $match: { $expr: { $eq: ["$_id", { $toObjectId: id }] } } },
+{
+    $lookup: {
+    from: "addresses",
+    localField: "_id",
+    foreignField: "user_id",
+    as: "userData",
+    },
+},
+{
+    $unwind: "$userData",
+},
+])
+.exec((err, result) => {
+if (result) {
+    if (result instanceof Array && result.length < 2) {
+    let obj = Object(result[0]);
+    return res
+        .status(200)
+        .json(response.success("User fetch successfully", obj));
+    } else {
+    return res
+        .status(200)
+        .json(response.success("User fetch successfully", result));
+    }
+} else {
+    return res.status(200).json(response.error(err.message));
+}
+});
+-------------------------------------------------------------------------------
+userModel
+.aggregate([
+{ $match: { $expr: { $eq: ["$_id", { $toObjectId: id }] } } },
+{
+    $lookup: {
+    from: "addresses",
+    localField: "_id",
+    foreignField: "user_id",
+    pipeline: [
+        { $project: { country: 1, state: 1, city: 1, pincode: 1 } },
+    ],
+    as: "address",
+    },
+},
+{
+    $unwind: "$address",
+},
+{
+    $project: {
+    _id: 1,
+    name: 1,
+    username: 1,
+    email: 1,
+    role: 1,
+    address: 1,
+    },
+},
+])
+.exec((err, result) => {
+if (result) {
+    if (result instanceof Array && result.length < 2) {
+    let obj = Object(result[0]);
+    return res
+        .status(200)
+        .json(response.success("User fetch successfully", obj));
+    } else {
+    return res
+        .status(200)
+        .json(response.success("User fetch successfully", result));
+    }
+} else {
+    return res.status(200).json(response.error(err.message));
+}
+});
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
