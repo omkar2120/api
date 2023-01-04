@@ -8,7 +8,9 @@ const connectDB = async () => {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
-    //  console.log(connection.STATES);
+    /**
+     * @output connection.STATES
+     */
     if (createConnection.STATES.connected) {
       console.log("Database connection successfully");
     } else {
