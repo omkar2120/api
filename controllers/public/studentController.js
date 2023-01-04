@@ -32,18 +32,38 @@ const studentController = {
 
   getStudents: async function (req, res) {
     try {
-      return await studentModel
-        .find()
-        .sort({ createdAt: -1 })
-        .then((result) => {
-          if (result) {
-            return res
-              .status(200)
-              .json(response.success("Data fetch successfully", result));
-          } else {
-            return res.status(200).json(response.error("Records not found"));
-          }
-        });
+      const { size, page } = req.body;
+      const isExists = Boolean(size && page);
+      if (!isExists) {
+        return res.status(400).json(response.error("Required all fields"));
+      } else {
+        let skip = size * (page - 1);
+        let limit = size || 1;
+        let total = await studentModel.find().select({ _id: 1 }).count();
+        let pages = Math.ceil(total / size);
+        return await studentModel
+          .find()
+          .sort({ createdAt: -1 })
+          .skip(skip)
+          .limit(limit)
+          .then((result) => {
+            if (result) {
+              return res
+                .status(200)
+                .json(
+                  response.success(
+                    "Data fetch successfully",
+                    result,
+                    pages,
+                    total
+                  )
+                );
+            } else {
+              return res.status(200).json(response.error("Records not found"));
+            }
+          })
+          .catch((error) => res.status(500).json(response.error(error)));
+      }
     } catch (error) {
       const { message } = error;
       return res.status(500).json(response.error(message));
