@@ -2,17 +2,22 @@ const response = {
   /**
    *
    * @param {String} message
-   * @param {Number} status
    * @param {Arrya|Object} data
+   * @param {Number} pages
+   * @param {Number} total
    * @returns Object
    */
-  success: (message, data) => {
+  success: (message, data, pages = null, total = null) => {
     const isExists = Boolean(
       data &&
         ((data instanceof Array && data.length > 0) || data instanceof Object)
     );
     if (isExists) {
-      return { message, status: 1, data };
+      if (pages && total) {
+        return { message, status: 1, pages, total, data };
+      } else {
+        return { message, status: 1, data };
+      }
     } else {
       return { message, status: 1 };
     }
@@ -20,7 +25,6 @@ const response = {
   /**
    *
    * @param {String} messages
-   * @param {Number} status
    * @returns Object
    */
   error: (message) => {
