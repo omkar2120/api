@@ -191,6 +191,7 @@ const userController = {
       return res.status(500).json(response.error(message));
     }
   },
+
   getUserDetails: async function (req, res) {
     try {
       const { id } = req.body;
